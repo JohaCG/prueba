@@ -2,33 +2,48 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Categoria;
 use App\Models\Producto;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class ProductosController extends Controller
 {
-    public function principal(){
-        return view('inicio');
-    }
 
     public function registrar(Request $request){
-        $producto = new Producto();
-        $producto->nombre = $request->nombre;
-        $producto->fecha_vencimiento = $request->fecha_vencimiento;
-        $producto->precio = $request->precio;
-        $producto->cantidad = $request->cantidad;
-        $producto->categoria_id = $request->categoria_id;
-        $producto->save();
+        $productos = new Producto();
+        $productos->nombre = $request->nombre;
+        $productos->fecha_vencimiento = $request->fecha_vencimiento;
+        $productos->precio = $request->precio;
+        $productos->cantidad = $request->cantidad;
+        $productos->categoria_id = $request->categoria_id;
+        $productos->save();
         return back();
     }
     public function index(){
-        $autores=Producto::where('estado',true)->get();
         $productos = DB::table('productos')
             ->join('categorias', 'productos.categoria_id', '=', 'categorias.id')
-            ->select('productos.id', 'productos.nombre', 'productos.year.fecha_vencimiento','productos.precio','productos.cantidad','categorias.descripcion as descripcion')
+            ->select('productos.id', 'productos.nombre', 'productos.fecha_vencimiento','productos.precio','productos.cantidad','categorias.descripcion as descripcion')
             ->where('productos.estado',true)
             ->get();
-        return view("inicio",compact('productos','categorias'));
+        return view("productos.inicio",compact('productos'));
     }
+    
+    public function eliminar($id){
+
+        $productos = Producto::find($id);
+        if($productos){
+            $productos->estado=false;
+            $productos->save();
+            return back();
+        }
+    }
+
+    public function showAutor($id){
+
+        $producto =Producto::find($id);
+        return view('listaproductos',compact('libro'));
+    }
+
+
 }

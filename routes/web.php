@@ -14,4 +14,5 @@ use App\Http\Controllers\ProductosController;
 */
 
 
-Route::get('/', [ProductosController::class,'principal']);
+Route::get('/',[ProductosController::class,'index']);
+Route::post('/productos',[ProductosController::class,'registrar']);
